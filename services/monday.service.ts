@@ -206,8 +206,8 @@ function reduceObjectToMonthlyData(input: InputObject): MondayData {
 
     months.sort((a, b) => {
         const [aMonth, aYear] = a.month.split("/");
-        const [bMonth, bYear] = b.month.split("/");
-        return new Date(bYear, bMonth, 1).getTime() - new Date(aYear, aMonth, 1).getTime();
+        const [bMonth, bYear] = b.month.split("/")
+        return new Date(Number(bYear), Number(bMonth), 1).getTime() - new Date(Number(aYear), Number(aMonth), 1).getTime();
     }).reverse();
 
     returnData.byMonthOrder = months;
