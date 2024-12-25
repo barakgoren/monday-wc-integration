@@ -1,22 +1,22 @@
 type ProjectTypes = Record<string, { color: string }>;
 
 export const projectsMap: ProjectTypes = {
-    "Zedix": {
+    "zedix": {
         color: "#4d4dff",
     },
-    "OUT": {
+    "out": {
         color: "#007acc",
     },
-    "Twigo": {
+    "twigo": {
         color: "#990099",
     },
-    "SmartSend": {
+    "smartsend": {
         color: "#00cc7a",
     },
-    "SBY": {
+    "sby": {
         color: "#ff6600",
     },
-    "Sense Apps": {
+    "sense apps": {
         color: "#a600ff",
     },
 }

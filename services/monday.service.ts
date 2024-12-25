@@ -48,11 +48,20 @@ export type MondayData = {
 }
 
 const queries = {
-    wc: `{
+    boardNamesAndIds: `{
+        me {
+            name
+        }
+        boards(limit: 25) {
+            name
+            id
+        }
+    }`,
+    wc: (id: number) => `{
   me {
     name
   }
-  boards(ids: 7076561027) {
+  boards(ids: ${id}) {
     name
     id
     items_page {
@@ -83,7 +92,9 @@ const mondayService = {
 };
 
 async function getWCData() {
-    const res = await http.post('', { query: queries.wc });
+    const main = await http.post('', { query: queries.boardNamesAndIds });
+    const id = main.data.boards.find((board: { name: string }) => board.name.includes("Work Clock") && !board.name.includes("Subitems"))?.id;    
+    const res = await http.post('', { query: queries.wc(id) });
     const input = res.data;
     const result = reduceObjectToMonthlyData(input);
     return result;
@@ -144,7 +155,7 @@ function reduceObjectToMonthlyData(input: InputObject): MondayData {
                 projects: Object.keys(result[month][day])
                     .filter((project) => project !== "total")
                     .map((project) => {
-                        const color = projectsMap[project]?.color
+                        const color = projectsMap[project.toLowerCase()]?.color
                         return {
                             id: Math.random(),
                             projectName: project,
@@ -192,7 +203,7 @@ function reduceObjectToMonthlyData(input: InputObject): MondayData {
             id: Math.random(), // Generate a unique ID for the project
             projectName,
             hours: Number(projectHours[projectName].toFixed(1)),
-            color: projectsMap[projectName]?.color
+            color: projectsMap[projectName.toLowerCase()]?.color
         }));
 
         return {
