@@ -121,7 +121,7 @@ function reduceObjectToMonthlyData(input: InputObject): MondayData {
                     if (column.id === "time_tracking") {
                         column.history.forEach(({ started_at, ended_at }) => {
                             const start = new Date(started_at);
-                            const end = new Date(ended_at);
+                            const end = new Date(ended_at || new Date().toISOString());
                             const day = start.getDate().toString().padStart(2, "0"); // Extract day (DD)
 
                             // Calculate hours worked
