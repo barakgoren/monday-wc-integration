@@ -54,7 +54,7 @@ export default function SettingsPage() {
       <p className="text-muted-foreground">
         For this integration to work, you need to provide an Monday.com
         developer API key. <br />
-        This will gain access only to your name, your boards names and ID's and
+        This will gain access only to your name, your boards names and ID&apos;s and
         the items in the Work Clock board.
       </p>
       <div className="flex items-center space-x-2">
