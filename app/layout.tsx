@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ToastContainer } from "react-toastify";
 
 const poppins = Poppins({
   subsets: ["latin"], // Choose your subsets
@@ -28,7 +29,7 @@ export default function RootLayout({
             <div className="container mx-auto px-4">
               <nav className="flex items-center justify-between h-16">
                 <Link href="/" className="text-lg font-semibold">
-                  Employee Dashboard
+                  OS Work Clock
                 </Link>
                 <div className="flex items-center space-x-4">
                   <Button variant={"ghost"} asChild>
@@ -41,6 +42,7 @@ export default function RootLayout({
               </nav>
             </div>
           </header>
+          <ToastContainer />
           <main className="flex-grow container mx-auto px-4 py-8">
             {children}
           </main>

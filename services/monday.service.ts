@@ -23,6 +23,9 @@ type BoardItem = {
 };
 
 type InputObject = {
+    me: {
+        name: string;
+    };
     boards: {
         items_page: {
             items: BoardItem[];
@@ -45,6 +48,7 @@ export type MondayData = {
     defaultOrder: ReducedResult;
     byMonthOrder: DataPerMonth[];
     byDayOrder: DataPerDay;
+    me: string;
 }
 
 const queries = {
@@ -93,7 +97,7 @@ const mondayService = {
 
 async function getWCData() {
     const main = await http.post('', { query: queries.boardNamesAndIds });
-    const id = main.data.boards.find((board: { name: string }) => board.name.includes("Work Clock") && !board.name.includes("Subitems"))?.id;    
+    const id = main.data.boards.find((board: { name: string }) => board.name.includes("Work Clock") && !board.name.includes("Subitems"))?.id;
     const res = await http.post('', { query: queries.wc(id) });
     const input = res.data;
     const result = reduceObjectToMonthlyData(input);
@@ -222,6 +226,7 @@ function reduceObjectToMonthlyData(input: InputObject): MondayData {
     }).reverse();
 
     returnData.byMonthOrder = months;
+    returnData.me = input.me.name;
 
     return returnData;
 

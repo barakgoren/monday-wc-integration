@@ -12,6 +12,7 @@ import UnauthorizedPopup from "@/components/unauthorized-popup";
 import TokenPopup from "@/components/token-popup";
 import useGlobalPopup from "@/store/useGlobalPopup";
 import { useAuthStore } from "@/store/useAuthStore";
+import { log } from "console";
 
 const views = [
   { value: "day", label: "Day" },
@@ -22,6 +23,8 @@ const views = [
 export default function Home() {
   const openGlobalPopup = useGlobalPopup((state) => state.openPopup);
   const token = useAuthStore((state) => state.token);
+  const logUserIn = useAuthStore((state) => state.login);
+  const user = useAuthStore((state) => state.user);
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: new Date(2023, 0, 1),
     to: new Date(2023, 11, 31),
@@ -32,28 +35,25 @@ export default function Home() {
     mondayService
       .getWCData()
       .then((data) => {
+        logUserIn({ name: data.me });
         setData(data.byMonthOrder);
       })
       .catch((error) => {
-        console.log({ error });
-
         openGlobalPopup();
       });
   }, [token]);
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Employee Work Clock Summary</h1>
+      <h1 className="text-2xl font-bold">
+        Welcome back{user && `, ${user?.name}`}!
+      </h1>
       <p className="text-muted-foreground">
         View employee work hours by day, week, month, or project
       </p>
-      <div className="flex flex-col sm:flex-row justify-between gap-4">
+      <TokenPopup />
+      <div className="flex justify-between gap-4">
         <DateRangePicker />
-        <TokenPopup />
-        <Tabs
-          value={"day"}
-          onValueChange={() => {}}
-          className="w-full sm:w-auto"
-        >
+        <Tabs value={"day"} onValueChange={() => {}}>
           <TabsList>
             {views.map((v) => (
               <TabsTrigger key={v.value} value={v.value}>

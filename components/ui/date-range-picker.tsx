@@ -20,14 +20,14 @@ export function DateRangePicker({
   const [date, setDate] = React.useState<DateRange | undefined>();
 
   return (
-    <div className={cn("grid gap-2", className)}>
+    <div className={cn("flex-1 max-w-[300px]", className)}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
+              "justify-start text-left w-full font-normal",
               !date && "text-muted-foreground"
             )}
           >
