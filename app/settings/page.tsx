@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Copy, ClipboardPaste, SaveIcon, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,8 +22,13 @@ const toastOptions: ToastOptions = {
 };
 
 export default function SettingsPage() {
-  const defaultToken = localStorage.getItem("token");
+  const [defaultToken, setDefaultToken] = useState<string | null>(null)
   const [token, setToken] = React.useState<string | null>(null);
+
+  useEffect(() => {
+    const defaultToken = localStorage.getItem("token");
+    setDefaultToken(defaultToken);
+  }, []);
 
   const handleActions = (action: "copy" | "paste" | "undo" | "save") => {
     toast.dismiss();
@@ -54,8 +59,8 @@ export default function SettingsPage() {
       <p className="text-muted-foreground">
         For this integration to work, you need to provide an Monday.com
         developer API key. <br />
-        This will gain access only to your name, your boards names and ID&apos;s and
-        the items in the Work Clock board.
+        This will gain access only to your name, your boards names and ID&apos;s
+        and the items in the Work Clock board.
       </p>
       <div className="flex items-center space-x-2">
         <div className="grid flex-1 gap-2 my-2">
