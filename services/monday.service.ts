@@ -56,7 +56,7 @@ const queries = {
         me {
             name
         }
-        boards(limit: 25) {
+        boards(limit: 50) {
             name
             id
         }
