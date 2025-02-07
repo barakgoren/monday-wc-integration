@@ -61,6 +61,27 @@ export function WorkClockSummaryTable({
               },
               { title: "Hours Worked", dataIndex: "hours", key: "hours" },
             ]}
+            summary={(items) => {
+              const totalHours = items.reduce((acc: number, item: any) => {
+                return acc + item.hours;
+              }, 0);
+              const averageHours = totalHours / items.length;
+              return (
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0}>
+                    <b>Average</b>
+                    <br/>
+                    <b>Total Days</b>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                  <Table.Summary.Cell index={2}>
+                    <b>{averageHours.toFixed(2)}</b>
+                    <br/>
+                    <b>{items.length}</b>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+              );
+            }}
             dataSource={Object.keys(record.days || {}).map((day) => ({
               key: day,
               date: day,
