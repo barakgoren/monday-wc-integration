@@ -160,6 +160,8 @@ function reduceObjectToMonthlyData(input: InputObject): MondayData {
                     .filter((project) => project !== "total")
                     .map((project) => {
                         const color = projectsMap[project.toLowerCase()]?.color
+                        console.log({ color, project });
+                        
                         return {
                             id: Math.random(),
                             projectName: project,
