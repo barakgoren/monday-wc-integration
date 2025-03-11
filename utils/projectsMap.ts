@@ -19,4 +19,7 @@ export const projectsMap: ProjectTypes = {
     "sense apps": {
         color: "#a600ff",
     },
+    'Nadlan': {
+        color: "#000000",
+    },
 }
