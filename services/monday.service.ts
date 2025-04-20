@@ -39,6 +39,7 @@ type ReducedResult = Record<
         string, // Day in the month (DD)
         {
             [project: string]: number; // Hours per project
+            dailyGap: number; // Daily gap in hours
             total: number; // Total hours for the day
         }
     >
@@ -50,6 +51,11 @@ export type MondayData = {
     byDayOrder: DataPerDay;
     me: string;
 }
+
+type Session = {
+    started_at: string;
+    ended_at: string;
+};
 
 const queries = {
     boardNamesAndIds: `{
@@ -89,6 +95,32 @@ const queries = {
     }
   }
 }`,
+}
+
+function calculateDailyGaps(sessions: Session[]): Record<string, number> {
+    // Parse and sort sessions by start time
+    const sorted = [...sessions].sort((a, b) =>
+        new Date(a.started_at).getTime() - new Date(b.started_at).getTime()
+    );
+
+    const gapsPerDay: Record<string, number> = {};
+
+    for (let i = 1; i < sorted.length; i++) {
+        const prevEnd = new Date(sorted[i - 1].ended_at);
+        const currStart = new Date(sorted[i].started_at);
+
+        const prevDay = prevEnd.toISOString().split("T")[0];
+        const currDay = currStart.toISOString().split("T")[0];
+
+        if (prevDay === currDay) {
+            const dateKey = new Intl.DateTimeFormat("en-GB").format(currStart); // "DD/MM/YYYY"
+            const gapInHours = (currStart.getTime() - prevEnd.getTime()) / (1000 * 60 * 60);
+
+            gapsPerDay[dateKey] = (gapsPerDay[dateKey] || 0) + gapInHours;
+        }
+    }
+
+    return gapsPerDay;
 }
 
 const mondayService = {
@@ -147,8 +179,49 @@ function reduceObjectToMonthlyData(input: InputObject): MondayData {
                     }
                 });
             });
+
+            const allTimerRecords = monthItem.subitems.flatMap((subItem) =>
+                subItem.column_values
+                    .filter((column) => column.id === "time_tracking")
+                    .flatMap((column) => column.history)
+            );
+
+            const totalBreakTimePerDay: Record<string, number> = {};
+            let previousEndedAt: string | null = null;
+            allTimerRecords.forEach(({ started_at, ended_at }) => {
+                const start = new Date(started_at);
+                const end = new Date(ended_at || new Date().toISOString());
+                const day = start.getDate().toString().padStart(2, "0"); // Extract day (DD)
+                const dayKey = `${day}/${month}`;
+
+                const startTime = start.getTime();
+                const gap = previousEndedAt ? startTime - new Date(previousEndedAt).getTime() : 0;
+
+                if (!totalBreakTimePerDay[dayKey]) {
+                    totalBreakTimePerDay[dayKey] = 0;
+                    return;
+                }
+
+                if (gap > 0) {
+                    totalBreakTimePerDay[dayKey] = (totalBreakTimePerDay[dayKey] || 0) + gap / (1000 * 60 * 60);
+                }
+                previousEndedAt = ended_at;
+            });
+
+            const dailyGaps = calculateDailyGaps(allTimerRecords);
+
+            Object.keys(dailyGaps).forEach((day) => {
+                const [dayNum, monthNum] = day.split("/");
+                if (result[month][dayNum]) {
+                    result[month][dayNum].dailyGap = dailyGaps[day];
+                }
+            });
+
         });
     });
+
+    console.log({ result });
+
 
     returnData.defaultOrder = result;
     const obj: DataPerDay = {};
@@ -192,6 +265,7 @@ function reduceObjectToMonthlyData(input: InputObject): MondayData {
                 acc[key] = returnData.byDayOrder[key];
                 return acc;
             }, {} as DataPerDay);
+
         const totalTime = Number(Object.values(daysForMonth).reduce((sum, day) => sum + day.hours, 0).toFixed(1));
         const projectHours: Record<string, number> = {};
         Object.values(daysForMonth).forEach((day) => {
