@@ -166,7 +166,7 @@ function reduceObjectToMonthlyData(input: InputObject): MondayData {
 
                             // Initialize data for the day if not present
                             if (!result[month][day]) {
-                                result[month][day] = { total: 0 };
+                                result[month][day] = { total: 0 } as any;
                             }
 
                             // Add hours to the project and update the total
