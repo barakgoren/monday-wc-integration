@@ -22,4 +22,7 @@ export const projectsMap: ProjectTypes = {
     'nadlan': {
         color: "#000000",
     },
+    'seasonseat': {
+        color: "#346725",
+    }
 }
