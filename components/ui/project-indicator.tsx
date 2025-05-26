@@ -13,6 +13,7 @@ export default function ProjectIndicator({ projects }: ProjectIndicatorProps) {
     <div className="w-full h-6 rounded-md flex">
       {projects
         .filter((project) => project.projectName !== "dailyGap")
+        .filter((project) => project.hours > 2)
         .map((project, index) => {
           return (
             <Tooltip
