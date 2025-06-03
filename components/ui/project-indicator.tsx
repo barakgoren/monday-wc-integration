@@ -7,7 +7,10 @@ type ProjectIndicatorProps = {
 };
 
 export default function ProjectIndicator({ projects }: ProjectIndicatorProps) {
-  const totalHours = projects.reduce((sum, project) => sum + project.hours, 0);
+  const totalHours = projects
+    .filter((project) => project.projectName !== "dailyGap")
+    .filter((project) => project.hours > 2)
+    .reduce((sum, project) => sum + project.hours, 0);
 
   return (
     <div className="w-full h-6 rounded-md flex">
