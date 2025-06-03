@@ -49,7 +49,7 @@ export default function ProjectIndicator({ projects }: ProjectIndicatorProps) {
                   borderRadius:
                     index === 0
                       ? "4px 0 0 4px"
-                      : index === totalProjects - 2
+                      : index === totalProjects - 1
                       ? "0 4px 4px 0"
                       : "0",
                 }}
