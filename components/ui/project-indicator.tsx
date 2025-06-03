@@ -12,6 +12,10 @@ export default function ProjectIndicator({ projects }: ProjectIndicatorProps) {
     .filter((project) => project.hours > 2)
     .reduce((sum, project) => sum + project.hours, 0);
 
+  const totalProjects = projects.filter(
+    (project) => project.projectName !== "dailyGap" && project.hours > 2
+  ).length;
+
   return (
     <div className="w-full h-6 rounded-md flex">
       {projects
@@ -45,7 +49,7 @@ export default function ProjectIndicator({ projects }: ProjectIndicatorProps) {
                   borderRadius:
                     index === 0
                       ? "4px 0 0 4px"
-                      : index === projects.length - 2
+                      : index === totalProjects - 2
                       ? "0 4px 4px 0"
                       : "0",
                 }}
